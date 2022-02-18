@@ -7,6 +7,16 @@ async function main() {
 
 	await roughWaters.deployed();
 
+	await roughWaters.updateScenario(9, 9);
+	await roughWaters.setChoicesSequences(
+		[0,1,2,3,4,5,6,7,8],
+		[2,2,2,3,4,5,7,8,9]
+	);
+	await roughWaters.setChoicesOptions(
+		[0,1,2,3,4,5,6,7,8],
+		[2,2,2,3,2,3,2,2,3]
+	);
+
 	console.log("RoughWaters deployed to:", roughWaters.address);
 }
 
