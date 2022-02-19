@@ -54,7 +54,7 @@ contract RoughWaters is Ownable, IRoughWaters {
     for (uint256 i = 0; i < choices.length; i++) {
       require(choices[i] < _choiceCount, "That choice does not exist");
       require(_choiceOptions[choices[i]] == 0, "That choice already has its options");
-      _choiceSequence[choices[i]] = options[i];
+      _choiceOptions[choices[i]] = options[i];
       emit ChoiceOptionsAssigned(choices[i], options[i]);
     }
   }
@@ -120,6 +120,14 @@ contract RoughWaters is Ownable, IRoughWaters {
     require(choiceResponse < _choiceOptions[choiceId], "That's not an option");
     _choicesMade[msg.sender][choiceId] = choiceResponse;
     emit ChoiceMade(msg.sender, choiceId, choiceResponse);
+  }
+
+  function batchSequence(uint256 sequenceId, uint256[] calldata choiceIds, uint256[] calldata optionIds) public {
+    require(choiceIds.length == optionIds.length, "Missing choices or options");
+    finishSequence(sequenceId);
+    for (uint256 i = 0; i < choiceIds.length; i++) {
+      makeChoice(choiceIds[i], optionIds[i]);
+    }
   }
 
   function getNextSequence() public view returns(uint256) {
