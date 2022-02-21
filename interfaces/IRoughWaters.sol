@@ -22,4 +22,8 @@ interface IRoughWaters {
     function makeChoice(uint256 choiceId, uint256 choiceResponse) external;
 
     function getNextSequence() external view returns(uint256 sequenceId);
+
+    function getCurrencyAddress() external view returns (address);
+
+    function claimReward() external;
 }

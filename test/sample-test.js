@@ -146,4 +146,13 @@ describe('RoughWaters', function () {
     await expect(nextSequence).to.equal(5);
   });
 
+  it('Correctly deploys ERC20', async () => {
+    const address = await adminContract.getCurrencyAddress();
+    await expect(address).to.not.be.equal('0x0000000000000000000000000000000000000000');
+
+    const coinsFactory = await ethers.getContractFactory('RoughWatersCoins');
+    const coinsContract = coinsFactory.attach(address);
+    const balance = await coinsContract.balanceOf(user.address);
+    expect(balance).to.equal(0);
+  })
 });

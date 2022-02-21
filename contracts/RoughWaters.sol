@@ -2,7 +2,9 @@
 pragma solidity 0.8.11;
 
 import "@openzeppelin/contracts/access/Ownable.sol";
-import "./IRoughWaters.sol";
+import "./RoughWatersCoins.sol";
+import "../interfaces/IRoughWaters.sol";
+import "../interfaces/IRoughWatersCoins.sol";
 
 contract RoughWaters is Ownable, IRoughWaters {
 
@@ -19,17 +21,24 @@ contract RoughWaters is Ownable, IRoughWaters {
   mapping(address => mapping(uint256 => SequenceStatus)) private _sequenceStatuses;
   mapping(address => uint256) private _sequenceCache;
   mapping(address => mapping(uint256 => uint256)) private _choicesMade;
+  mapping(address => uint256) private _rewardClaimed;
   mapping(uint256 => bool) private _deletedSequences;
   mapping(uint256 => uint256) private _choiceSequence;
   mapping(uint256 => uint256) private _choiceOptions;
   uint256 private _sequenceCount;
   uint256 private _choiceCount;
-  address Coins;
+  IRoughWatersCoins Coins;
   address Items;
   address Collection;
 
+
   constructor() {
-    // TODO: deploy Coins, Items and Collection
+    Coins = new RoughWatersCoins();
+    // TODO: deploy Items and Collection
+  }
+
+  function getCurrencyAddress() public view returns (address) {
+    return address(Coins);
   }
 
   function updateScenario(uint256 sequenceCount, uint256 choiceCount) public onlyOwner {
@@ -144,5 +153,11 @@ contract RoughWaters is Ownable, IRoughWaters {
 
   function getChoice(uint256 choiceId) public view returns(uint256) {
     return _choicesMade[msg.sender][choiceId];
+  }
+
+  function claimReward() public {
+    require(_rewardClaimed[msg.sender] < block.timestamp - 86400, "You have already claimed your daily reward");
+    _rewardClaimed[msg.sender] = block.timestamp;
+    Coins.mint(msg.sender, 10);
   }
 }
