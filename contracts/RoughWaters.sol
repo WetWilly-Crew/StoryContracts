@@ -5,6 +5,10 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "./RoughWatersCoins.sol";
 import "../interfaces/IRoughWaters.sol";
 import "../interfaces/IRoughWatersCoins.sol";
+import "../interfaces/IRoughWatersCollection.sol";
+import "../interfaces/IRoughWatersItems.sol";
+import "./RoughWatersItems.sol";
+import "./RoughWatersCollection.sol";
 
 contract RoughWaters is Ownable, IRoughWaters {
 
@@ -28,17 +32,46 @@ contract RoughWaters is Ownable, IRoughWaters {
   uint256 private _sequenceCount;
   uint256 private _choiceCount;
   IRoughWatersCoins Coins;
-  address Items;
-  address Collection;
-
+  IRoughWatersItems Items;
+  IRoughWatersCollection Collection;
 
   constructor() {
     Coins = new RoughWatersCoins();
-    // TODO: deploy Items and Collection
+    Items = new RoughWatersItems();
+    Collection = new RoughWatersCollection();
+    emit CoinsContractChanged(address(0), address(Coins));
+    emit ItemsContractChanged(address(0), address(Items));
+    emit CollectionContractChanged(address(0), address(Collection));
   }
 
   function getCurrencyAddress() public view returns (address) {
     return address(Coins);
+  }
+
+  function getItemsAddress() public view returns (address) {
+    return address(Items);
+  }
+
+  function getCollectionAddress() public view returns (address) {
+    return address(Collection);
+  }
+
+  function setCurrencyAddress(address coinContract) public onlyOwner {
+    address previousAddress = getCurrencyAddress();
+    Coins = RoughWatersCoins(coinContract);
+    emit CoinsContractChanged(previousAddress, address(Coins));
+  }
+
+  function setItemsAddress(address itemsContract) public onlyOwner {
+    address previousAddress = getItemsAddress();
+    Items = RoughWatersItems(itemsContract);
+    emit ItemsContractChanged(previousAddress, address(Items));
+  }
+
+  function setCollectionAddress(address collectionContract) public onlyOwner {
+    address previousAddress = getCollectionAddress();
+    Collection = RoughWatersCollection(collectionContract);
+    emit CollectionContractChanged(previousAddress, address(Collection));
   }
 
   function updateScenario(uint256 sequenceCount, uint256 choiceCount) public onlyOwner {
@@ -159,5 +192,9 @@ contract RoughWaters is Ownable, IRoughWaters {
     require(_rewardClaimed[msg.sender] < block.timestamp - 86400, "You have already claimed your daily reward");
     _rewardClaimed[msg.sender] = block.timestamp;
     Coins.mint(msg.sender, 10);
+  }
+
+  function setPronoun(string calldata pronoun) public {
+    _pronouns[msg.sender] = pronoun;
   }
 }

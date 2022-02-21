@@ -18,8 +18,12 @@ module.exports = {
         'c946c09e166856cb02f88cb6a5a248ba9ed5b89c993eb8411ac79f1d84d2bc84',
         '20617f81e83594f2854f2687605710a0a834a31c0220537e64642a937caf3ecf',
       ],
-      chainId: 1313161555,
-      gasPrice: 120 * 1000000000
+      chainId: 0x4e454153,
+      gasPrice: 10000000
+    },
+    ropsten: {
+      url: `https://eth-ropsten.alchemyapi.io/v2/${ALCHEMY_API_KEY}`,
+      accounts: [`${ROPSTEN_PRIVATE_KEY}`]
     }
   },
   solidity: {

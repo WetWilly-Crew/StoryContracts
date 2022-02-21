@@ -17,6 +17,12 @@ interface IRoughWaters {
 
     event SequenceDeleted(uint256 sequenceId);
 
+    event CoinsContractChanged(address previousAddress, address newAddress);
+
+    event CollectionContractChanged(address previousAddress, address newAddress);
+
+    event ItemsContractChanged(address previousAddress, address newAddress);
+
     function finishSequence(uint256 sequenceId) external;
 
     function makeChoice(uint256 choiceId, uint256 choiceResponse) external;
